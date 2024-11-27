@@ -8,8 +8,16 @@ export const POST = async (req: Request) => {
   const imageUrl = data.image_url
   const emailAddress = data.email_addresses[0].email_address
 
-  await db.user.create({
-    data: {
+  await db.user.upsert({
+    where: {
+      emailAddress: emailAddress ?? ""
+    }, 
+    update: {
+      imageUrl,
+      firstName,
+      lastName
+    },
+    create: {
       id,
       firstName,
       lastName,
