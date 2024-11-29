@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 
 import {ClerkProvider} from '@clerk/nextjs'
 import {dark} from '@clerk/themes'
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Deoxys",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
           <TRPCReactProvider>{children}</TRPCReactProvider>
+          <Toaster/>
         </body>
       </html>
     </ClerkProvider>
