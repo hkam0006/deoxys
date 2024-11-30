@@ -33,7 +33,6 @@ const CreatePage = () => {
         },
         onError: () => {
           toast.error("Failed to create the project")
-          reset()
         }
     })
     return true

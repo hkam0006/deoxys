@@ -54,8 +54,8 @@ export function AppSidebar(){
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url} className={cn({
-                      '!bg-primary !text-white' : pathname === item.url
+                    <Link href={item.url} className={cn('text-white', {
+                      '!bg-primary text-black' : pathname === item.url
                     })}>
                       <item.icon />
                       <span>{item.title}</span>
@@ -79,9 +79,9 @@ export function AppSidebar(){
                       setProjectId(project.id)
                     }}>
                       <div className={cn(
-                        'rounded-sm border size-6 flex items-center justify-center text-sm bg-white text-primary',
+                        'rounded-sm border size-6 flex items-center justify-center text-sm text-primary',
                         {
-                          'bg-primary text-white' : project.id === projectId
+                          '!bg-primary !text-black' : project.id === projectId
                         }
                       )}>
                         {project.name[0]}
