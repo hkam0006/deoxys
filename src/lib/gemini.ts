@@ -8,7 +8,6 @@ const model = genAI.getGenerativeModel({
 })
 
 export const aiSummariseCommit = async (diff: string) => {
-  const shortenedDiff = diff.slice(0, 10_000)
   const result = await model.generateContent(
     `You are an expert programmer, and you are trying to  summarize a git diff.
     Reminders about the git diff format: 
@@ -39,7 +38,7 @@ export const aiSummariseCommit = async (diff: string) => {
     because there were more than two relevant files in the hypothetical commit.
     Do not include parts of the example in your summary.
     It is given only as a example of appropriate comments.
-    Please summarise the following diff file: \n\n ${shortenedDiff}`
+    Please summarise the following diff file: \n\n ${diff}`
   )
 
   return result.response.text(); 
@@ -66,9 +65,14 @@ export async function summariseCode(doc: Document){
 }
 
 export async function generateEmbeddings(summary: string){
-  const model =  genAI.getGenerativeModel({
-    model: "text-embedding-004"
-  })
-  const result = await model.embedContent(summary)
-  return result.embedding.values
+  try {
+    const model =  genAI.getGenerativeModel({
+      model: "text-embedding-004"
+    })
+    const result = await model.embedContent(summary)
+    return result.embedding.values
+  } catch (err){
+    console.log(`Error embedding: ${summary}`, err)
+    return []
+  }
 }
