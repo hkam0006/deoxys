@@ -1,4 +1,5 @@
 import {GoogleGenerativeAI} from '@google/generative-ai'
+import { Document } from '@langchain/core/documents'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_TOKEN as string)
 
@@ -7,7 +8,8 @@ const model = genAI.getGenerativeModel({
 })
 
 export const aiSummariseCommit = async (diff: string) => {
-  const result = await model.generateContent([
+  const shortenedDiff = diff.slice(0, 10_000)
+  const result = await model.generateContent(
     `You are an expert programmer, and you are trying to  summarize a git diff.
     Reminders about the git diff format: 
     For every file, there are a few metadata lines, like (for example):
@@ -37,29 +39,36 @@ export const aiSummariseCommit = async (diff: string) => {
     because there were more than two relevant files in the hypothetical commit.
     Do not include parts of the example in your summary.
     It is given only as a example of appropriate comments.
-    `, `Please summarise the follwing diff file: \n\n ${diff}`
-  ])
+    Please summarise the following diff file: \n\n ${shortenedDiff}`
+  )
 
-  return result.response.text();
+  return result.response.text(); 
 }
 
-console.log(await aiSummariseCommit(
-  `diff --git a/README.md b/README.md
-index e144608..ed3b5c7 100644
---- a/README.md
-+++ b/README.md
-@@ -6,6 +6,13 @@ You can access and use the web application at https://split-buddy-app.web.app
- 
- ![screenshot of the expense application](https://raw.githubusercontent.com/hkam0006/SplitBuddy_TS/main/assets/screenshot.png?raw=true)
- 
-+## Technologies Used
-+- Typescript
-+- React
-+- Firebase (Auth, Hosting, Firestore)
-+- Material UI
-+- Zustand
-+
- ## Features
- 
- - **User-Friendly Interface**: Intuitive and easy-to-use interface for effortless expense tracking.`
-))
+export async function summariseCode(doc: Document){
+  const code = doc.pageContent.slice(0, 10_000)
+  try {
+    const summary = await model.generateContent(
+      `You are a intelligent senior software engineer who specialises in onboarding junior software engineers onto projects
+      You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+      START CODE BLOCK:
+      ---
+      ${code}
+      ___
+      END CODE BLOCK
+      Give them a summary no more than 100 words of the code above.` 
+    )
+    return summary.response.text()
+  } catch (err){
+    console.log("Error summarising document: ", err)
+    return ''
+  }
+}
+
+export async function generateEmbeddings(summary: string){
+  const model =  genAI.getGenerativeModel({
+    model: "text-embedding-004"
+  })
+  const result = await model.embedContent(summary)
+  return result.embedding.values
+}

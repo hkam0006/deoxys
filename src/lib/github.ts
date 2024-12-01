@@ -7,8 +7,6 @@ export const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 })
 
-const url = 'https://github.com/docker/genai-stack'
-
 type Response = {
   commitHash: string;
   commitMessage: string;
@@ -19,6 +17,7 @@ type Response = {
 
 export const getCommitHashes = async (url: string) => {
   const [owner, repo] = url.split("/").slice(-2)
+  console.log(owner, repo)
   if (!owner || !repo){
     throw new Error("Invalid github url")
   }
@@ -30,7 +29,7 @@ export const getCommitHashes = async (url: string) => {
 
   const sortedCommits = data.sort((a: any, b: any) => new Date(b.commit.author.date).getTime() - new Date(a.commit.author.date).getTime()) as any[]
 
-  return sortedCommits.slice(0, 10).map((commit: any) => ({
+  return sortedCommits.slice(0, 5).map((commit: any) => ({
     commitHash: commit.sha as string,
     commitMessage: commit.commit.message ?? "",
     commitAuthorName: commit.commit?.author?.name ?? "",
@@ -64,7 +63,7 @@ export async function pollCommits(projectId: string) {
     }
     return ""
   })
-  const commit = await db.commit.createMany({
+  const commits = await db.commit.createMany({
     data: summaries.map((summary, index) => {
       console.log(`processing commit ${index}`)
       return {
@@ -78,7 +77,7 @@ export async function pollCommits(projectId: string) {
       }
     })
   })
-  return commit
+  return commits
 }
 
 async function filterUnprocessedCommits(projectId: string, commitHashes: Response[]){
@@ -98,11 +97,9 @@ async function fetchProjectGithubUrl(projectId: string){
       githubUrl: true
     }
   })
+  console.log(project)
   if (!project?.githubUrl) {
-    throw new Error("Project has not github URL")
+    throw new Error("Project has no github URL")
   }
-  console.log(project.githubUrl)
   return {project, githubUrl: project.githubUrl}
 }
-
-await pollCommits("cm42sgsph0000pzfyan4d5bja")
