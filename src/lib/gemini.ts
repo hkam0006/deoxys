@@ -37,7 +37,7 @@ export const aiSummariseCommit = async (diff: string) => {
     The last comment does not include the files names, 
     because there were more than two relevant files in the hypothetical commit.
     Do not include parts of the example in your summary.
-    It is given only as a example of appropriate comments.
+    It is given only as a example of appropriate comment s.
     Please summarise the following diff file: \n\n ${diff}`
   )
 
@@ -50,6 +50,7 @@ export async function summariseCode(doc: Document){
     const summary = await model.generateContent(
       `You are a intelligent senior software engineer who specialises in onboarding junior software engineers onto projects
       You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
+      Here is the code:
       ---
       ${code}
       ___

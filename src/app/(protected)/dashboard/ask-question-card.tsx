@@ -8,6 +8,10 @@ import useProject from '@/hooks/use-project'
 import React, { useState } from 'react'
 import { askQuestion } from './actions'
 import { readStreamableValue } from 'ai/rsc'
+import MDEditor from '@uiw/react-md-editor'
+import CodeReferences from './code-references'
+import { api } from '@/trpc/react'
+import { toast } from 'sonner'
 
 const AskQuestionCard = () => {
   const {project} = useProject()
@@ -16,14 +20,16 @@ const AskQuestionCard = () => {
   const [loading, setLoading] = useState(false)
   const [fileReferences, setFileReferences] = useState<{fileName: string; sourceCode: string; summary: string;}[]>([])
   const [answer, setAnswer] = useState("")
+  const saveAnswer = api.project.saveAnswer.useMutation()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    if (!project?.id) return
+    setAnswer('')
+    setFileReferences([])
     e.preventDefault()
+    if (!project?.id) return
     setLoading(true)
-    setOpen(true)
-
     const {output, fileReferences} = await askQuestion(question, project.id)
+    setOpen(true)
     setFileReferences(fileReferences)
 
     for await (const delta of readStreamableValue(output)){
@@ -37,16 +43,34 @@ const AskQuestionCard = () => {
   return (
     <>
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className='sm:max-w-[80vw]'>
         <DialogHeader>
-          <DialogTitle>
-            Deoxys: {question}
-          </DialogTitle>
+          <div className='flex items-center gap-2'>
+            <DialogTitle>
+              Deoxys: {question}
+            </DialogTitle>
+            <Button disabled={saveAnswer.isPending} variant={'outline'} onClick={() => {
+              saveAnswer.mutate({
+                projectId: project!.id,
+                question,
+                answer,
+                fileReferences
+              }, {
+                onSuccess: () => {
+                  toast.success("Answer saved")
+                },
+                onError: () => {
+                  toast.error("Failed to save answer!")
+                }
+              })
+            }}>Save Answer</Button>
+          </div>
         </DialogHeader>
-        {answer}
-        {fileReferences.map(file => {
-          return <span>{file.fileName}</span>
-        })}
+        
+        <MDEditor.Markdown source={answer} className='max-w-[70vw] !h-full max-h-[40vh] overflow-scroll' />
+        <div className='h-4'/>
+        <CodeReferences fileReferences={fileReferences}/>
+        <Button onClick={() => setOpen(false)} >Close</Button>
       </DialogContent>
     </Dialog>
       <Card className='relative col-span-3 ring-1 ring-inset ring-slate-500'>
@@ -59,7 +83,7 @@ const AskQuestionCard = () => {
               placeholder='Which file should I edit to change the home page?'
             /> 
             <div className='h-4'/>
-            <Button type='submit'>
+            <Button type='submit' disabled={loading}>
               Ask Deoxys
             </Button>
           </form>

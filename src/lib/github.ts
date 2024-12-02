@@ -48,6 +48,7 @@ async function summariseCommit(githubUrl: string, commitHash: string){
 }
 
 export async function pollCommits(projectId: string) {
+  
   const {project, githubUrl} = await fetchProjectGithubUrl(projectId)
   const commitHashes = await getCommitHashes(githubUrl)
   const unprocessedCommits = await filterUnprocessedCommits(projectId, commitHashes)
@@ -85,7 +86,11 @@ async function filterUnprocessedCommits(projectId: string, commitHashes: Respons
     where: {projectId}
   })
 
-  const unprocessedCommits = commitHashes.filter((commit) => !processedCommits.some((processedCommit) => processedCommit.commitHash === commit.commitHash))
+  const unprocessedCommits = commitHashes.filter(
+    (commit) => {
+      return !processedCommits.some((processedCommit) => processedCommit.commitHash === commit.commitHash)
+    }
+  )
 
   return unprocessedCommits
 }
