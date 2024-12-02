@@ -50,11 +50,9 @@ export async function summariseCode(doc: Document){
     const summary = await model.generateContent(
       `You are a intelligent senior software engineer who specialises in onboarding junior software engineers onto projects
       You are onboarding a junior software engineer and explaining to them the purpose of the ${doc.metadata.source} file.
-      START CODE BLOCK:
       ---
       ${code}
       ___
-      END CODE BLOCK
       Give them a summary no more than 100 words of the code above.` 
     )
     return summary.response.text()
@@ -65,14 +63,10 @@ export async function summariseCode(doc: Document){
 }
 
 export async function generateEmbeddings(summary: string){
-  try {
-    const model =  genAI.getGenerativeModel({
-      model: "text-embedding-004"
-    })
-    const result = await model.embedContent(summary)
-    return result.embedding.values
-  } catch (err){
-    console.log(`Error embedding: ${summary}`, err)
-    return []
-  }
+  const model =  genAI.getGenerativeModel({
+    model: "text-embedding-004"
+  })
+  const result = await model.embedContent(summary)
+  const embedding = result.embedding
+  return embedding.values
 }
