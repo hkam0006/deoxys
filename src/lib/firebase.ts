@@ -6,7 +6,7 @@ import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/st
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCDoyWqygxhA3-7_Bawj4Muepg4CNhrQ2k",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "deoxys-a6402.firebaseapp.com",
   projectId: "deoxys-a6402",
   storageBucket: "deoxys-a6402.firebasestorage.app",

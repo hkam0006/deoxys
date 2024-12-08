@@ -74,8 +74,8 @@ const MeetingCard = () => {
         <div>
           <CircularProgressbar value={progress} text={`${progress}`} className='size-20' styles={
             buildStyles({
-              pathColor: '#256eb',
-              textColor: '#256eb'
+              pathColor: 'white',
+              textColor: 'white'
             })
           }/>
           <p className='text-sm text-white text-center'>Uploading your meeting...</p>
