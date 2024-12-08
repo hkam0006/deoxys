@@ -13,7 +13,7 @@ const CommitLog = () => {
   return (
     <>
       <ul className='space-y-4'>
-        {commits?.map((commit, commitIdx) => {
+        {commits?.sort().map((commit, commitIdx) => {
           return <li key={commit.id} className='relative flex gap-x-4'>
             <div className={cn(
               commitIdx === commits.length - 1 ? 'h-6' : '-bottom-6',

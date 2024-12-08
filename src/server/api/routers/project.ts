@@ -41,10 +41,15 @@ export const projectRouter = createTRPCRouter({
   getCommits: protectedProcedure.input(z.object({
     projectId: z.string()
   })).query(async ({ctx, input}) => {
-    console.log("BEFORE")
     await pollCommits(input.projectId)
-    console.log("AFTER")
-    return await ctx.db.commit.findMany({where: {projectId: input.projectId}})
+    return await ctx.db.commit.findMany({
+      where: {
+        projectId: input.projectId
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
   }),
   saveAnswer: protectedProcedure.input(z.object({
     projectId: z.string(),
@@ -59,6 +64,44 @@ export const projectRouter = createTRPCRouter({
         projectId: input.projectId,
         userId: ctx.user.userId!,
         fileReferences: input.fileReferences 
+      }
+    })
+  }),
+  getQuestions: protectedProcedure.input(z.object({
+    projectId: z.string()
+  })).query(async ({ctx, input}) => {
+    return await ctx.db.question.findMany({
+      where: {
+        projectId: input.projectId
+      },
+      include: {
+        user: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+  }),
+  uploadMeeting: protectedProcedure.input(z.object({
+    projectId: z.string(),
+    meetingUrl: z.string(),
+    name: z.string()
+  })).mutation(async ({ctx, input}) => {
+    const meeting = await ctx.db.meeting.create({
+      data: {
+        projectId: input.projectId,
+        meetingUrl: input.meetingUrl,
+        name: input.name,
+        status: "PROCESSING"
+      }
+    })
+  }),
+  getMeetings: protectedProcedure.input(z.object({
+    projectId: z.string(),
+  })).query(async ({ctx, input}) => {
+    return await ctx.db.meeting.findMany({
+      where: {
+        projectId: input.projectId
       }
     })
   })
