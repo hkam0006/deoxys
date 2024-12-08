@@ -11,6 +11,8 @@ import { api } from '@/trpc/react'
 import useProject from '@/hooks/use-project'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
 
 const MeetingCard = () => {
   const [progress, setProgress] = useState(0)
@@ -18,6 +20,13 @@ const MeetingCard = () => {
   const uploadingMeeting = api.project.uploadMeeting.useMutation()
   const router = useRouter()
   const {project} = useProject()
+  const processingMeeting = useMutation({
+    mutationFn: async (data: {meetingUrl: string, meetingId: string, projectId: string}) => {
+      const {meetingUrl, meetingId, projectId} = data
+      const response = await axios.post('/api/process-meeting', {meetingUrl, meetingId, projectId})
+      return response.data
+    }
+  })
   const {getRootProps, getInputProps} = useDropzone({
     accept: {
       'audio/*': ['.mp3', '.wav', '.m4a']
@@ -35,15 +44,19 @@ const MeetingCard = () => {
         meetingUrl: downloadUrl,
         name: file?.name
       }, {
-        onSuccess: () => {
+        onSuccess: (meeting) => {
           toast.success("Meeting uploaded successfully")
           router.push('/meetings')
+          processingMeeting.mutateAsync({
+            meetingUrl: downloadUrl,
+            meetingId: meeting.id,
+            projectId: project.id
+          })
         },
         onError: () => {
           toast.error("Failed to upload meeting")
         }
       })
-      window.alert(downloadUrl)
       setIsUploading(false)
     }
   })
