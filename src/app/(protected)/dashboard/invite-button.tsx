@@ -23,10 +23,10 @@ const InviteButton = () => {
             className='mt-4'
             readOnly
             onClick={() => {
-              navigator.clipboard.writeText(`${window.location.origin}/join/${projectId}`)
+              navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_URL}/join/${projectId}`)
               toast.success('Link copied')
             }}
-            value={`${window.location.origin}/join/${projectId}`}
+            value={`${process.env.NEXT_PUBLIC_URL}/join/${projectId}`}
           />
         </DialogContent>
       </Dialog>
