@@ -1,74 +1,93 @@
-'use client'
-import useProject from '@/hooks/use-project'
-import { api } from '@/trpc/react'
-import React, { useState } from 'react'
-import MeetingCard from '../dashboard/meeting-card'
-import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
-import useRefetch from '@/hooks/use-refetch'
+"use client";
+import useProject from "@/hooks/use-project";
+import { api } from "@/trpc/react";
+import React, { useState } from "react";
+import MeetingCard from "../dashboard/meeting-card";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import useRefetch from "@/hooks/use-refetch";
+import { useMediaQuery } from "usehooks-ts";
+import { Trash } from "lucide-react";
 
 const MeetingsPage = () => {
-  const {projectId} = useProject()
-  const deleteMeeting = api.project.deleteMeeting.useMutation()
-  const refetch = useRefetch()
-  const {data: meetings, isLoading} = api.project.getMeetings.useQuery({projectId}, {
-    refetchInterval: 4000
-  })
+  const { projectId } = useProject();
+  const deleteMeeting = api.project.deleteMeeting.useMutation();
+  const isXs = !useMediaQuery('(min-width: 640px)')
+  const refetch = useRefetch();
+  const { data: meetings, isLoading } = api.project.getMeetings.useQuery(
+    { projectId },
+    {
+      refetchInterval: 4000,
+    },
+  );
   return (
     <>
       <MeetingCard />
-      <div className='h-6'/>
-      <h1 className='text-xl font-semibold'>Meetings</h1>
+      <div className="h-6" />
+      <h1 className="text-xl font-semibold">Meetings</h1>
       {meetings && meetings.length === 0 && <div>No meetings found</div>}
       {isLoading && <div>Loading...</div>}
-      <ul className='divide-y divide-gray-200'>
-        {meetings?.map(meeting => (
-          <li key={meeting.id} className='flex items-center justify-between py-5 rounded-md gap-x-6 ring-1 ring-inset ring-slate-500 p-4'>
+      <ul className="divide-y divide-gray-200">
+        {meetings?.map((meeting) => (
+          <li
+            key={meeting.id}
+            className="flex items-center justify-between gap-x-6 rounded-md p-4 py-5 ring-1 ring-inset ring-slate-500"
+          >
             <div>
-              <div className='min-w-0'>
-                <div className='flex items-center gap-2'>
-                  <Link href={`/meetings/${meeting.id}`} className='text-sm font-semibold'>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/meetings/${meeting.id}`}
+                    className="text-sm font-semibold"
+                  >
                     {meeting.name}
                   </Link>
                   {meeting.status === "PROCESSING" && (
-                    <Badge className='bg-yellow-500 text-white'>
+                    <Badge className="bg-yellow-500 text-white">
                       Processing...
                     </Badge>
                   )}
                 </div>
               </div>
-              <div className='flex items-center text-xs text-gray-500 gap-x-2'>
-                  <p className='whitespace-nowrap'>
-                    {meeting.createdAt.toLocaleDateString()}
-                  </p>
-                  <p className='truncate'>
-                    {meeting.issues.length} issues
-                  </p>
+              <div className="flex items-center gap-x-2 text-xs text-gray-500">
+                <p className="whitespace-nowrap">
+                  {meeting.createdAt.toLocaleDateString()}
+                </p>
+                <p className="truncate">{meeting.issues.length} issues</p>
               </div>
             </div>
 
-            <div className='flex items-center flex-none gap-x-4'>
+            <div className="flex flex-none items-center gap-x-4">
               <Link href={`/meetings/${meeting.id}`}>
-                  <Button>
-                    View Meeting
-                  </Button>
+                <Button>
+                {isXs ? 'View' : 'View Meeting'}
+                </Button>
               </Link>
-              <Button disabled={deleteMeeting.isPending} variant={'destructive'} onClick={() => deleteMeeting.mutate({meetingId: meeting.id}, {
-                onSuccess: () => {
-                  toast.success("Meeting deleted successfully")
-                  refetch()
-                }
-              })}>
-                Delete Meeting
+              <Button
+                disabled={deleteMeeting.isPending}
+                variant="destructive"
+                onClick={() => {
+                  deleteMeeting.mutate(
+                    { meetingId: meeting.id },
+                    {
+                      onSuccess: () => {
+                        toast.success("Meeting deleted successfully");
+                        refetch();
+                      },
+                    },
+                  )
+                }}
+              >
+                {isXs ? <Trash /> : 'Delete Meeting'}
               </Button>
             </div>
           </li>
         ))}
       </ul>
     </>
-  )
-}
+  );
+};
 
-export default MeetingsPage
+export default MeetingsPage;
