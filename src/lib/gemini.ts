@@ -27,7 +27,7 @@ export const aiSummariseCommit = async (diff: string) => {
     [...]
     EXAMPLE SUMMARY COMMENTS:
     \'\'\'
-    * Raised the amount of retunred recoriding from \'10\' to \'100\' [packages/server/recordings_api.ts], [packages/server/constants.ts]
+    * Raised the amount of returned recordings from \'10\' to \'100\' [packages/server/recordings_api.ts], [packages/server/constants.ts]
     * Fixed a typo in github action name [.github/workflows/gpt-commit-summarizer.yml]
     * Moved the \'octokit\' initialisation to a seperate file [src/octokit.ts], [src/index.ts]
     * Added OpenAI API for completions [packages/utils/apis/openai.ts]

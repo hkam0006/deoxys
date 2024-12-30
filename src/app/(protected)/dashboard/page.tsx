@@ -1,7 +1,7 @@
 'use client'
 
 import useProject from '@/hooks/use-project'
-import { ExternalLink, Github, GithubIcon } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import CommitLog from './commit-log'
