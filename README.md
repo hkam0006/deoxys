@@ -1,29 +1,98 @@
-# Create T3 App
+# Deoxys - AI-Powered Repository and Meeting Insights Web Application
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Overview
+Deoxys is a web application designed to empower junior developers by simplifying repository management and team collaboration. With features like AI-powered commit summaries, question-and-answer functionality, and actionable insights from meeting recordings, Deoxys bridges the gap between technical repositories and effective project management. 
 
-## What's next? How do I make an app with this?
+Hosted live at [Deoxys on Vercel](https://deoxys-dev.vercel.app/).
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+---
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Features
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Repository Insights
+- Provides detailed descriptions and summaries of repository commits.
+- Integrated with GitHub SDK for seamless repository access and commit parsing.
 
-## Learn More
+### AI-Powered Assistance
+- Leverages Gemini and AssemblyAI for natural language processing.
+- Users can ask questions about the repository to gain clarity on commits and code changes.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Meeting Insights
+- Upload meeting recordings to extract actionable issues and to-dos.
+- AI-generated summaries ensure team alignment and effective planning.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### User-Friendly Interface
+- Built with Shadcn UI for a modern and intuitive design.
+- Fully responsive for optimal usage across devices.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Secure and Scalable
+- Firebase Storage for secure data handling.
+- Stripe integration for managing premium features.
 
-## How do I deploy this?
+---
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## Technologies Used
+- **Frontend:** React, TypeScript, Next.js, Shadcn UI
+- **Backend:** Firebase Storage, Gemini, AssemblyAI
+- **Integrations:** GitHub SDK, Stripe
+- **Hosting:** Vercel
+
+---
+
+## Installation and Setup
+To run Deoxys locally, follow these steps:
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/deoxys
+   cd deoxys
+   ```
+
+2. **Install Dependencies**
+   Ensure you have `npm` or `yarn` installed, then run:
+   ```bash
+   npm install
+   ```
+
+3. **Environment Variables**
+   Create a `.env` file in the root directory and includes all required environment variables. Look at `.env.example` for required variables.
+
+4. **Run the Development Server**
+   ```bash
+   npm run dev
+   ```
+   Visit `http://localhost:3000` to view the app locally.
+
+---
+
+## Usage
+
+1. **Repository Insights**
+   - Connect your GitHub repository to fetch commit details.
+   - View summaries and detailed descriptions for each commit.
+
+2. **AI Question & Answer**
+   - Use the query box to ask questions about the repository and get AI-powered responses.
+
+3. **Meeting Insights**
+   - Upload your meeting recordings (audio files).
+   - Deoxys processes the recordings and provides a list of actionable tasks.
+
+4. **Buy Credits**
+   - Web Application is integrated via Stripe for purchasing credits.
+
+---
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Contact
+If you have any questions or suggestions, feel free to reach out:
+- **Email:** [sonnykam18@gmail.com](mailto:sonnykam18@gmail.com)
+- **GitHub:** [github.com/hkam0006](http://github.com/hkam0006)
+
+---
+
+Enjoy using Deoxys and happy coding!
